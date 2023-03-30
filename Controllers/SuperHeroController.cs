@@ -21,11 +21,12 @@ namespace DapperCrud.Controllers
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> FindAll()
         {
-            var heroes = await _conn.QueryAsync<SuperHero>("select * from superheroes");
+            IEnumerable<SuperHero> heroes = await FindAllHeroes();
 
             return Ok(heroes);
 
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<SuperHero>> FindById(int id)
@@ -39,6 +40,11 @@ namespace DapperCrud.Controllers
             {
                 return NotFound();
             }
+        }
+
+        private async Task<IEnumerable<SuperHero>> FindAllHeroes()
+        {
+            return await _conn.QueryAsync<SuperHero>("select * from superheroes");
         }
 
     }
