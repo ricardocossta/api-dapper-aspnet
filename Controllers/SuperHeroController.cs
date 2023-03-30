@@ -42,6 +42,15 @@ namespace DapperCrud.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult<List<SuperHero>>> Insert([FromBody] SuperHero superHero)
+        {
+            await _conn.ExecuteAsync("insert into superheroes (name, firstname, lastname, place) values " +
+                "(@Name, @FirstName, @LastName, @Place)", superHero);
+
+            return Ok(await FindAllHeroes());
+        }
+
         private async Task<IEnumerable<SuperHero>> FindAllHeroes()
         {
             return await _conn.QueryAsync<SuperHero>("select * from superheroes");
