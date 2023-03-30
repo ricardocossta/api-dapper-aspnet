@@ -27,5 +27,19 @@ namespace DapperCrud.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SuperHero>> FindById(int id)
+        {
+            try
+            {
+                var hero = await _conn.QueryFirstAsync<SuperHero>($"select * from superheroes where id = @Id", new { Id = id });
+                return Ok(hero);
+            }
+            catch(InvalidOperationException)
+            {
+                return NotFound();
+            }
+        }
+
     }
 }
