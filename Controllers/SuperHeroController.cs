@@ -54,6 +54,16 @@ namespace DapperCrud.Controllers
             return Ok(insertedSuperHero);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, [FromBody] SuperHero superHero)
+        {
+            superHero.Id = id;
+            await _conn.ExecuteAsync("update superheroes set name = @Name, firstname = @FirstName, " +
+                "lastname = @LastName, place = @Place where id = @Id", superHero);
+
+            return NoContent();
+        }
+
         private async Task<SuperHero> FindHeroById(int lastInsertedId)
         {
             return await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = lastInsertedId });
