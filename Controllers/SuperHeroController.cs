@@ -33,7 +33,7 @@ namespace DapperCrud.Controllers
         {
             try
             {
-                var hero = await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = id });
+                var hero = await FindHeroById(id);
                 return Ok(hero);
             }
             catch(InvalidOperationException)
@@ -49,12 +49,15 @@ namespace DapperCrud.Controllers
                 "(@Name, @FirstName, @LastName, @Place)", superHero);
 
             var lastInsertedId = await _conn.ExecuteScalarAsync<int>("select MAX(id) from superheroes");
+            SuperHero insertedSuperHero = await FindHeroById(lastInsertedId);
 
-            var insertedSuperHero = await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = lastInsertedId });
-
-            return Ok(insertedSuperHero) ;
+            return Ok(insertedSuperHero);
         }
 
+        private async Task<SuperHero> FindHeroById(int lastInsertedId)
+        {
+            return await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = lastInsertedId });
+        }
 
         private async Task<IEnumerable<SuperHero>> FindAllHeroes()
         {
