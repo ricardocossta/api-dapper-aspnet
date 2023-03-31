@@ -64,9 +64,16 @@ namespace DapperCrud.Controllers
             return NoContent();
         }
 
-        private async Task<SuperHero> FindHeroById(int lastInsertedId)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
-            return await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = lastInsertedId });
+            await _conn.ExecuteAsync("delete from superheroes where id = @Id", new { Id = id });
+            return NoContent();
+        }
+
+        private async Task<SuperHero> FindHeroById(int id)
+        {
+            return await _conn.QueryFirstAsync<SuperHero>("select * from superheroes where id = @Id", new { Id = id });
         }
 
         private async Task<IEnumerable<SuperHero>> FindAllHeroes()
